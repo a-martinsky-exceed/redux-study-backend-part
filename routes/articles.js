@@ -14,7 +14,8 @@ router.get('/', async (_, res) => {
 
 router.post('/add', async (req, res) => {
   try {
-    const article = await ArticleController.create(req.body);
+    const {title, body} = req.body;
+    const article = await ArticleController.create({title, body});
     res.send(article);
   } catch (e) {
     console.log(e);
@@ -32,5 +33,16 @@ router.post('/update', async (req, res) => {
   }
 })
 
+
+router.post('/delete', async (req, res) => {
+  try {
+    const {_id} = req.body;
+    await ArticleController.deleteArticle(_id);
+    res.send({_id, deleted: true});
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
+})
 
 module.exports = router;
