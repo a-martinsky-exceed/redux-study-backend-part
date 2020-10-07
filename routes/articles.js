@@ -7,8 +7,8 @@ router.get('/', async (_, res) => {
     const list = await ArticleController.getAll();
     res.send(list);
   } catch (e) {
-    console.log(e);
-    res.send(e);
+    console.log(e.message);
+    res.status(422).send({ message: e.message})
   }
 })
 
@@ -28,8 +28,8 @@ router.post('/update', async (req, res) => {
     const article = await ArticleController.update(req.body);
     res.send(article);
   } catch (e) {
-    console.log(e);
-    res.send(e);
+    console.log(e.message);
+    res.status(422).send({ message: e.message})
   }
 })
 

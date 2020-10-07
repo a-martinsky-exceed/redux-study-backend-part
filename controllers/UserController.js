@@ -1,4 +1,6 @@
+const ObjectID = require('mongodb').ObjectID;
 const User = require('../models/User');
+const AuthService = require('../services/AuthService');
 
 const register = async (data) => {
   try {
@@ -17,9 +19,20 @@ const findByLogin = async (login) => {
   }
 };
 
+const updateUser = async (data) => {
+  try {
+    const {_id} = data;
+    const user = findByLogin(login);
+    const filter = {_id: ObjectID(_id)};
+    return await User.findByIdAndUpdate(filter, data);
+  } catch (e) {
+    showError(e);
+  }
+}
+
 const showError = (e) => {
   console.log(`Error in User Controller: ${e}`);
   throw new Error(e);
 };
 
-module.exports = {register, findByLogin};
+module.exports = {register, findByLogin, updateUser};
