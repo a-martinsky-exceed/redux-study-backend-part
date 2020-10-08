@@ -5,7 +5,8 @@ const UserSchema = new Schema({
   login: {type: String, max: 25, require: true, unique: true},
   pwd: {type: String, require: true},
   salt: {type: String, require: true},
-  username: {type: String, max: 25, require: true, unique: true}
+  username: {type: String, max: 25, require: true, unique: true},
+  uuid: {type: String}
 });
 
 module.exports = mongoose.model('User', UserSchema);

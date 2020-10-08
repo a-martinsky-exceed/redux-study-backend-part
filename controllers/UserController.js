@@ -21,7 +21,7 @@ const findByLogin = async (login) => {
 
 const updateUser = async (data) => {
   try {
-    const {_id} = data;
+    const {_id, login} = data;
     const user = findByLogin(login);
     const filter = {_id: ObjectID(_id)};
     return await User.findByIdAndUpdate(filter, data);

@@ -9,9 +9,10 @@ router.post('/register', async (req, res) => {
     const hash = await AuthService.handlerPasswordToHash(password);
     const pwd = hash.pwdHash;
     const {salt} = hash;
-    const userObj = {login, pwd, salt, username};
+    const uuid = AuthService.uuidv4();
+    const userObj = {login, pwd, salt, username, uuid};
     const newUser = await UserController.register(userObj);
-    res.send({result: {success: true, username: newUser.username}});
+    res.send({result: {success: true, username: newUser.username, uuid}});
   } catch (e) {
     console.log(e.message);
     if (e.name === 'MongoError' && e.code === 11000) {
@@ -23,18 +24,22 @@ router.post('/register', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const {login, password} = req.body;
-    const user = await UserController.findByLogin(login);
-    if (user) {
+    const {username, password, uuid} = req.body;
+    const user = await UserController.findByLogin(username);
+    console.log(req.body);
+    if (uuid) {
+      res.send({result: {success: uuid === user.uuid}});
+    } else {
       const {pwd, salt} = user;
       const result = AuthService.validatePassword(password, pwd, salt);
-      res.send({result: {validate: result}});
-    } else {
-      res.status(404).send({result: {validate: false, message: `Find no users by login ${login}`}});
+      res.send({result: {success: result}});
+    }
+    if (!user) {
+      res.status(404).send({result: {success: false, message: `Find no users by login ${login}`}});
     }
   } catch (e) {
     console.log(e.message);
-    res.status(422).send({ result: {validate: false, message: e.message}})
+    res.status(422).send({ result: {success: false, message: e.message}})
   }
 })
 
